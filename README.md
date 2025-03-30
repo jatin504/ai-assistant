@@ -19,7 +19,7 @@ Ensure you have Python 3.x installed on your system.
 
 Steps to Run
 Clone the Repository
-git clone https://github.com/your-username/AI-Command-Assistant.git
+git clone https://github.com/jatin504/ai-assistant.git
 
 cd AI-Command-Assistant
 Install Dependencies (if required)
