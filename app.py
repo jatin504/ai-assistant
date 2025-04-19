@@ -1,44 +1,43 @@
-import tkinter as tk
-from tkinter import Entry, Label, Button
+from flask import Flask, render_template_string, request, redirect
 import webbrowser
 
-# Define the main window
+app = Flask(__name__)
 
-root = tk.Tk()
-root.title("YOUR AI ASSISTANT")
+TEMPLATE = """
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your AI Assistant</title>
+</head>
+<body style="background-color: steelblue; text-align: center; padding-top: 50px;">
+    <h2>Enter your command:</h2>
+    <form method="POST">
+        <input type="text" name="query" style="width: 300px;" required><br><br>
+        <button name="action" value="youtube">Search on YouTube</button>
+        <button name="action" value="google">Search on Google</button>
+        <button name="action" value="instagram">Search on Instagram</button>
+    </form>
+</body>
+</html>
+"""
 
-# adding a background color
-root.configure(bg='steelblue')
+
+@app.route("/", methods=["GET", "POST"])
+def home():
+    if request.method == "POST":
+        query = request.form["query"]
+        action = request.form["action"]
+
+        if action == "youtube":
+            return redirect(f"https://www.youtube.com/results?search_query={query}")
+        elif action == "google":
+            return redirect(f"https://www.google.com/search?q={query}")
+        elif action == "instagram":
+            username = query.replace('@', '')
+            return redirect(f"https://www.instagram.com/{username}/")
+
+    return render_template_string(TEMPLATE)
 
 
-# Define the function for youtube open 
-def search_youtube():
-    query= entry.get()
-    url=f"https://www.youtube.com/results?search_query={query}"
-    webbrowser.open(url)
-
-# Define the function for google open 
-def search_google():
-    query= entry.get()
-    url=f"https://www.google.com/search?q={query}"
-    webbrowser.open(url)    
-    
-    
-# Define the function for instagram open 
-def search_instagram():
-    user_name = entry.get().replace('@','') #ensure username is clean of @
-    url=f"https://www.instagram.com/{user_name}/"
-    webbrowser.open(url)
-    
-    
-# create input field
-Label(root, text="Enter your command: ").pack(pady=10)
-entry=Entry(root, width=50)
-entry.pack(pady=10)
-Button(root, text="Search on youtube", command=search_youtube).pack(pady=5)    
-Button(root, text="Search on instagram", command=search_instagram).pack(pady=5)    
-Button(root, text="Search on google", command=search_google).pack(pady=5)    
-    
-    
-#Run the GUI loop
-root.mainloop()
+if __name__ == "__main__":
+    app.run()
